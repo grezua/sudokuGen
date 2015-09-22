@@ -12,13 +12,24 @@ object SudokuPrinter {
 
 
   def main(args: Array[String]) {
-    val printedList = hideCells(testField, 100)
+    val printedList = hideCells(testField, 60)
 
     printField(printedList)
   }
 
   def hideCells(field: List[List[Int]], hiddenCount: Int): List[List[Option[Int]]] = {
-    val numbers = (for (i <- 1 to hiddenCount) yield Random.nextInt(81)).toList.distinct
+
+
+    def rndNumbers(num: Vector[Int], acc: Vector[Int], drainCount: Int): Vector[Int] ={
+      drainCount match {
+        case 0 => acc
+        case i =>
+          val (xx , xb) =  num.splitAt(Random.nextInt(num.size))
+           rndNumbers(xx ++ xb.tail, xb.head +: acc, i - 1)
+      }
+    }
+
+    val numbers = rndNumbers((0 to 81).toVector,Vector(),hiddenCount)
 
     val result = for {i <- field.indices }
       yield {
